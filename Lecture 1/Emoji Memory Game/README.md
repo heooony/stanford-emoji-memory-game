@@ -1,11 +1,3 @@
-- [Lecture 1 : Getting Started with SwiftUI](#lecture-1---getting-started-with-swiftui)
-  * [타입 추론](#-----)
-    + [핵심 포인트](#------)
-  * [기본 UI](#---ui)
-    + [핵심 포인트](#-------1)
-  * [ZStack, 그 외 View](#zstack------view)
-    + [핵심 포인트](#-------2)
-
 # Lecture 1 : Getting Started with SwiftUI
 ## 타입 추론
 ```swift
