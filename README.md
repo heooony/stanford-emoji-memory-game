@@ -14,28 +14,32 @@ storyboard를 사용하는 다른 강의는 [이곳](https://www.youtube.com/wat
 ## Lecture 1 : Getting Started with SwiftUI
 The first lecture jumps right into building the first application of the quarter: a card-matching game called Memorize.  It will be the foundation for the first few weeks of course material.
 
-Link : https://www.youtube.com/watch?v=bqu6BquVi2M&feature=youtu.be
+- Link : https://www.youtube.com/watch?v=bqu6BquVi2M&feature=youtu.be
+- 내가 정리한 것 : https://github.com/oueya1479/stanford-emoji-memory-game/tree/master/Lecture%201/Emoji%20Memory%20Game
 
 ---
 
 ## Lecture 2 : Learning More about SwiftUI
 Development on Memorize continues.  Creating reusable components (a Card in the game) and combining them to make more complex user-interfaces.
 
-Link : https://www.youtube.com/watch?v=3lahkdHEhW8
+- Link : https://www.youtube.com/watch?v=3lahkdHEhW8
+- 내가 정리한 것 : https://github.com/oueya1479/stanford-emoji-memory-game/tree/master/Lecture%202/Emoji%20Memory%20Game
 
 ---
 
 ## Lectrue 3 : MVVM
 Conceptual overview of the architectural paradigm underlying the development of applications for iOS using SwiftUI (known as MVVM) and an explanation of a fundamental component of understanding the Swift programming language: its type system.  Then both of these are applied to the Memorize application started in the first two lectures.
 
-Link : https://www.youtube.com/watch?v=--qKOhdgJAs
+- Link : https://www.youtube.com/watch?v=--qKOhdgJAs
+- 내가 정리한 것 : https://github.com/oueya1479/stanford-emoji-memory-game/tree/master/Lecture%203/Emoji%20Memory%20Game
 
 ---
 
 ## Lecture 4 : More MVVM enum Optionals
 The MVVM architecture is fully applied to Memorize.  The important Swift concepts of enums and Optionals are covered and used to finish off the game logic of the Memorize game.
 
-Link : https://www.youtube.com/watch?v=oWZOFSYS5GE
+- Link : https://www.youtube.com/watch?v=oWZOFSYS5GE
+- 내가 정리한 것 : https://github.com/oueya1479/stanford-emoji-memory-game/tree/master/Lecture%204/Emoji%20Memory%20Game
 
 ---
 
