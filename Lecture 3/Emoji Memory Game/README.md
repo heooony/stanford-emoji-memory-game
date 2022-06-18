@@ -97,8 +97,27 @@ struct MemoryGame<CardContent> {
 
 ## ViewModel
 ```swift
-
+class EmojiMemoryGame {
+    
+    static var emojis = ["⚽️","🏀","🏈","⚾️","🏉","🏐","🎾","🥎","🥏","🎱","🪀","🏓","🥍","🏑","🏒","🏸","🏏","🪃","🥅","⛳️","🎣","🏹","🛝","🪁","🤿","🥊","🥋","🎽","⛸","🛷","🛼","🛹"]
+    
+    static func createMemoryGame() -> MemoryGame<String> {
+        MemoryGame<String>(numberOfPairsOfCards: 4) { pairIndex in EmojiMemoryGame.emojis[pairIndex] }
+    }
+    
+    private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
+    
+    var cards: Array<MemoryGame<String>.Card> {
+        return model.cards
+    }
+}
 ```
+
+### 핵심 포인트
+1. 
+- static에 대한 설명 아래 참조
+- 최대한 **10, 200**을 지키려고 노력함
+- 여기서 10, 200이란 **하나의 메소드는 10줄 이내로 최대한 정리하고, 총 줄은 200자 밑으로 하는 규칙**을 의미한다.
 
 ## ViewModel 이슈
 <img width="801" alt="스크린샷 2022-06-18 오후 6 03 19" src="https://user-images.githubusercontent.com/68142821/174430746-66c800f1-8fe7-424d-9d64-15d003e15585.png">
