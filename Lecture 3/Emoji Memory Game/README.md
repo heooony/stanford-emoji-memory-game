@@ -1,304 +1,145 @@
-- [Lecture 2 : Getting Started with SwiftUI](#lecture-2---getting-started-with-swiftui)
-  * [Previews](#previews)
+- [Lectrue 3 : MVVM](#lectrue-3---mvvm)
+  * [MVVM이란?](#mvvm---)
+  * [struct, class](#struct--class)
+  * [Generics](#generics)
+  * [Model](#model)
     + [핵심 포인트](#------)
-  * [객체 지향](#-----)
+  * [ViewModel](#viewmodel)
+  * [ViewModel 이슈](#viewmodel---)
     + [핵심 포인트](#-------1)
-  * [새로운 뷰 생성](#--------)
-    + [핵심 포인트](#-------2)
-  * [View 변수](#view---)
-    + [핵심 포인트](#-------3)
-    + [핵심 포인트](#-------4)
-  * [ForEach](#foreach)
-    + [핵심 포인트](#-------5)
-  * [코드 정리하는 방법](#----------)
-  * [아이콘 사이트](#-------)
-  * [LazyVGrid](#lazyvgrid)
-    + [핵심 포인트](#-------6)
-  * [strokeBorder](#strokeborder)
 
-# Lecture 2 : Getting Started with SwiftUI
-## Previews
+# Lectrue 3 : MVVM
+## MVVM이란?
+- **Model, View, ViewModel의 줄임말이다.**
+- **Model** : UI Independent Data + Logic, “The Truth”
+- **View** : Reflects the Model Stateless
+- **Model** -> View : data flows this way(i.e. read-only)
+
+- Model의 변경이 View에게 효율적으로 전달되어야 하며, 해당하는 View의 body var으로 이동해야한다.
+- 영향을 받는 부분만 전달해야 하고, 발생해야 한다.
+- 즉, 여기서 VM의 등장이 필요로 하다.
+
+- **ViewModel**: Binds View to Model Interpreter
+- Model과 View의 인터프리터 역할을 수행할 수 있으며, 네트워크에서 들어오는 데이터,  HTTP Request 등을 담당할 수 있다.
+- 이는 View, Model의 부하를 막하주며 코드를 간결하게 해준다.
+- Model은 철저하게 Model, 원본의 데이터를 수행해야 하며, View에서는 표현될 때 가공이 되어야 하는 경우 **ViewModel에서 수행**할 수 있다.
+- 즉 View는 항상 ViewModel을 통해서 데이터를 받아와야 하며 다음과 같은 흐름을 보일 수 있다.
+
+Model -> **(notices changes : Model의 변경사항 감지)** -> ViewModel(publishes “something changed”) -> View(automatically observes publications, pulls data and rebuilds)
+
+- ViewModel은 특정한 View와 연결되었다는 정보가 없기 때문에 변경사항을 감지하면 그것에 대해 global으로 알린다. 그래야 View가 반응할 수 있기 때문이다.
+
+## struct, class
+구조체와 클래스는 모두 어떠한 무언가를 **담을 수 있는** 역할을 하며, 언뜻보면 정말 같은 의미로써 사용되는 것 같다. 그러나 공통점과 차이점을 짚어보면서 사용하는 시기에 대해 분석해보는 능력이 필요로하다.
+
+- 둘 다 var, let과 같은 변수를 가질 수 있다.
+- 둘 다 func를 가질 수 있다.
+- 둘 다 initializers를 가지고 있다.
+
+그러나,
+- struct는 **value type**, class는 **reference type**이다.
+- 이는 값을 전달할 때에 struct는 하나의 값을 복사하여 붙여넣기하는 식으로 전달하는 것이지만, class의 경우 자신의 메모리 포인터를 전달할 수 있기 때문에 **복사한 변수에서 값이 변경되면, 기존의 클래스에서도 값이 변경!!**된다.
+- ViewModel이 **class**로 선언되어야 하는 이유는 무엇일까?
+- 바로 모든 View에서 **공통된 값과 메모리**를 참조해야 한다는 것이다.
+
+또한,
+- class는 **free initializes**를 제공해준다. 이는 어떤 값이 할당되지 않으면 **오류가 나는 이유**이다.*(자동으로 이니셜라이즈가 존재하여, 값이 없는건 말도 안된다고 생각하나보다.)* struct에서는 직접 initializes를 구현해야 하기 때문에 어떤 값이 대입되어있지 않아도 **오류를 발생시키지 않는다.**
+
+## Generics
 ```swift
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-        ContentView()
-            .preferredColorScheme(.dark)
+struct Array<Element> {
+	func append(_ element: Element) { ... }
+}
+```
+
+1. 
+- Generics는 쉽게 설명하자면, 어떤 타입을 받을 지 모르는 상태에서 사용할 수 있다.
+- 예를 들어 Array<String>으로 생성하고 그 변수에 .append(“asd”)를 사용할 수 있듯이, 어떤 타입으로도 `.append`라는 메소드는 받아들일 수 있도록 준비해야 한다.
+- 그럴때 사용하는 것이 Generics 타입이다.
+
+## Model
+```swift
+import Foundation
+
+struct MemoryGame<CardContent> {
+    var cards: Array<Card>
+    
+    func choose(_ card: Card) {
+        
+    }
+    
+    struct Card {
+        var isFaceUp: Bool
+        var isMatched: Bool
+        var content: CardContent
     }
 }
 ```
 
 ### 핵심 포인트
 1. 
-- 이 경우는 해당 파일의 이름이 ContentView이어야 한다.
-- iOS의 버전이 올라가면서 **dark모드가 탄생**하게 되었기 때문에 두 가지를 직접 테스트 해보고 이상이 없어야 한다.
-- 다음과 같은 코드는 미리보기를 두 가지 동시에 볼 수 있도록 한다.
-
-## 객체 지향
-```swift
-struct ContentView: View {
-    var body: some View {
-        HStack {
-            ZStack {
-                RoundedRectangle(cornerRadius: 20.0)
-                    .stroke(lineWidth: 3.0)
-                Text("Hello, world!")
-            }
-            ZStack {
-                RoundedRectangle(cornerRadius: 20.0)
-                    .stroke(lineWidth: 3.0)
-                Text("Hello, world!")
-            }
-            ZStack {
-                RoundedRectangle(cornerRadius: 20.0)
-                    .stroke(lineWidth: 3.0)
-                Text("Hello, world!")
-            }
-        }
-        .padding(.horizontal)
-        .foregroundColor(.red)
-    }
-}
-```
-
-다음과 같이 코드가 길어지는 경우
-
-```swift
-struct ContentView: View {
-    var body: some View {
-        HStack {
-            CardView()
-            CardView()
-            CardView()
-        }
-        .padding(.horizontal)
-        .foregroundColor(.red)
-    }
-}
-
-struct CardView: View {
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 20.0)
-                .stroke(lineWidth: 3.0)
-            Text("Hello, world!")
-        }
-    }
-}
-```
-
-다음으로 변경할 수 있음
-
-### 핵심 포인트
-1. 
-- 코드가 길어질 경우 지저분해지기 때문에, 이를 방지하기 위해 **자주 사용 될 코드는 직접 뷰**로 정의한다.
-- 해당 뷰를 직접 생성시에 생기는 문제는 다음 차례에 정리해두었다.
-
-
-## 새로운 뷰 생성
-<img width="472" alt="스크린샷 2022-06-18 오후 12 20 31" src="https://user-images.githubusercontent.com/68142821/174420887-76ce7809-09b0-41d6-b8d1-b1726ecd18aa.png">
-
-### 핵심 포인트
-1. 
-- 다음과 같이 struct안의 어떤 값이 초기화 되지 않았을 시, 해당 구조체를 사용하기 위해서는 **파라미터 값**을 넘겨주어야만 한다!
-- CardView 내에서 해당 값을 초기화하게 되면 사용할 때 굳이 파라미터를 넘겨줄 필요가 없다.
-- `var isFaceUp: Bool = true`으로 지정하는 경우 isFaceUp은 **true**라는 값을 통해 Bool값을 유추할 수 있다. 이는 `var isFaceUp = true`로 사용할 수 있다.
+-  `cards`는 card의 집합체 모델이다.
+- `Array<Card>`에서 Card라는 generics가 들어갔다.
 
 2. 
+- `choose()`는 하나의 선택한 카드에 대해 이벤트를 나누는 함수이다.
+
+3. 
+- struct Card는 MemoryGame 내부에 있다. 그 이유는 바깥쪽에 Card를 놓으면, 지금과 같은 단일 프로그램일 경우에는 문제가 없겠지만 **프로그램 개수가 많아지면 많아질수록 다른 Card의 의미와 구분이 힘들어질 수**가 있다.
+- 이 Card는 MemoryGame에서 사용하는 Card라는 구조체임을 알려야 한다.
+
+4. 
+- `content`의 반환형은 `CardContent`이며, 이는  Generics를 사용한 것이다.
+- 카드 내 문구가 String일수도, Image일 수도 있기 때문에 struct구조체 이름 옆에 제네릭을 명시해준다.
+
+5. 
+- Foundation을 import한다. SwiftUI를 import하지 않는 이유는, model은 view와 아무런 상관없는 것이기 떄문이다. model에서는 view를 관여하지도, 알 필요도 없다.
+
+## ViewModel
 ```swift
-ZStack {
-	if isFaceUp {
-		RoundedRectangle(cornerRadius: 20.0)
-			.fill()
-			.foregroundColor(.white)
-                
-		RoundedRectangle(cornerRadius: 20.0)
-			.stroke(lineWidth: 3)
-		Text("😀")
-			.font(.largeTitle)
-		} else {
-			RoundedRectangle(cornerRadius: 20)
-			.fill()
-		}
-	}
-}
+
 ```
-- 다음과 같이 `RoundedRectangle(cornerRadius: 20.0)`의 사용이 잦아지는 경우 이도 `let shape = RoundedRectangle(cornerRadius: 20.0)`와 같이 정리해서 사용할 수 있다. 
-- 위와 같이 shape에 타입을 지정하지 않은 이유도 스위프트가 알아서 타입추론을 하는 경우이기 때문이다.
 
-## View 변수
-<img width="650" alt="스크린샷 2022-06-18 오후 12 32 28" src="https://user-images.githubusercontent.com/68142821/174421296-b9e826e7-2ed5-4b86-bde1-5d4dfc1a9879.png">
+## ViewModel 이슈
+<img width="801" alt="스크린샷 2022-06-18 오후 6 03 19" src="https://user-images.githubusercontent.com/68142821/174430746-66c800f1-8fe7-424d-9d64-15d003e15585.png">
 
+parameter으로 cards를 넘겨주어야 오류가 해결된다고 함.
+
+<img width="340" alt="스크린샷 2022-06-18 오후 6 04 01" src="https://user-images.githubusercontent.com/68142821/174430775-34230f02-8335-4f40-b53b-4d2047bf8106.png">
+
+실제 구조체에서는 cards에 아무런 값이 할당되어 있지 않기 때문에 위와 같은 오류가 발생
 
 ### 핵심 포인트
 1. 
-- var와 let의 차이는 상수가 아닌지, 상수인지에 대한 논리이다. 즉 `var something = 1`의 값은 언제든 변경이 가능하지만, let으로 생성하면 변경이 불가능 하다.
-- 다음과 같은 오류가 출력되는 이유는 **스위프트에서는 뷰가 변경될 수 없기 때문**이다.
-- 따라서 변경될 수 있음을 알리는 어떠한 장치가 필요하다.
+- 먼저 `private var model: MemoryGame<String> = MemoryGame<String>(cards: cards)`를 하면 되지 않을까 할 수 있음
+- 그렇지만 ViewModel에서는 View의 요청을 받아 model으로 가는 입장이다.
+- 즉 위와 같은 문구는, **사용자로부터 cards의 요청을 받고 그것을 모델에게 넘긴다는 마인드가** 된다.
 
 2. 
-- `@State var isFaceUp: Bool = true`으로 상태프로퍼티를 붙이면 해당 값은 변경이 가능한 상태로 파악한다.
+- 그렇기 때문에 Model에서는 init이라는 메소드로 무엇인가 초기화하는 기능이 필요시된다.
 
-<img width="310" alt="스크린샷 2022-06-18 오후 12 41 37" src="https://user-images.githubusercontent.com/68142821/174421540-1312422e-dd78-41bd-ab6c-f2d86ceae1f8.png">
+<img width="572" alt="스크린샷 2022-06-18 오후 6 12 22" src="https://user-images.githubusercontent.com/68142821/174431070-354373d0-fbf1-4ed0-ad84-7ff4ed143120.png">
 
-### 핵심 포인트
-1. 
-- 이와 같이 해당 문자를 집어넣을 수 있다.
-- 그런데 이처럼 사용하지는 않는다. 너무나도 많은 수고가 들어가고, **무엇보다도 유지보수가 어렵다.**
+다음은 init메소드이다.
+- ViewModel으로부터 몇 개의 카드를 생성할 지에 대해 정보를 받아야 하며, 그 다음으로는 그 카드의 내용이 어떤 것들인지에 대해 입력받아야 한다.
+- 즉, 여기서도 Model은 **실질적인 데이터를 갖고 있는것도 아니고, 무엇인가 게임에 대해 결정지을 요소(카드를 몇개 생성할 지에 대해)를 갖고 있는것도 아니다.**
+- 그 모든 것들은 ViewModel으로 부터 받아야한다!
 
-## ForEach
-<img width="433" alt="스크린샷 2022-06-18 오후 12 46 51" src="https://user-images.githubusercontent.com/68142821/174421666-abab7788-21b6-4e48-8799-724335f32613.png">
+3. 
+[image:54AADE32-D75F-47B6-9CA4-540D6D6DBEF2-595-0000006E0B597B8D/스크린샷 2022-06-18 오후 6.16.59.png]
+- 다음과 같이 하나의 함수를 만들어 ViewModel에서 Model에게 넘겨줄 수 있다.
+- 클로저를 이용해서 다음과 같이 생략할 수 있다.
+[image:443886DD-4F25-4BFB-AEA0-7A2539219D25-595-0000006E9A3CD486/스크린샷 2022-06-18 오후 6.18.40.png]
 
-물론 다음과 같이 수정 가능하다.
+4. 
 
-<img width="373" alt="스크린샷 2022-06-18 오후 12 47 18" src="https://user-images.githubusercontent.com/68142821/174421684-a4151f3c-aa5f-429c-95e1-d795dfc89e7f.png">
-
-### 핵심 포인트
-1. 
-- `id:\.self`를 집어넣지 않으면 ForEach로 생성될 때 각자가 어떠한 값으로 비교되어야 하는지 파악할 수 없다.
-- String으로 생성된 배열이기 때문에 예를 들어 [“1”, “1”, “2”]와 값이 같을 때 첫번째의 1과 두번째의 1을 구분할 방법이 존재하지 않는다!
-2. **추가 정보**
-- Int, String, Float 등과 같은 녀석들은 Hashable이 구현되어 있다. 이 말은 즉슨, id값으로 직접 우리가 변수를 생성하지 않아도, ForEach의 id 값에 \.self만 넣어주어도 작동한다는 의미이다.
-- 그러나 Hashable이 구현되지 않은 어떤 사용자 정의 클래스일때에는 오류가 발생하게 된다.
-- 방금은 String이기 때문에 swift에서 제공하는 Hashable이 존재하며, 이를 구분할 수 있게 되었다.
-
-이모지 변수 만들기 귀찮으면 다음을 복사하길 바란다.
-```swift
-var emojis = ["⚽️","🏀","🏈","⚾️","🏉","🏐","🎾","🥎","🥏","🎱","🪀","🏓","🥍","🏑","🏒","🏸","🏏","🪃","🥅","⛳️","🎣","🏹","🛝","🪁","🤿","🥊","🥋","🎽","⛸","🛷","🛼","🛹"]
-```
-
-
-## 코드 정리하는 방법
-```swift
-struct ContentView: View {
-    var emojis = ["⚽️","🏀","🏈","⚾️","🏉","🏐","🎾","🥎","🥏","🎱","🪀","🏓","🥍","🏑","🏒","🏸","🏏","🪃","🥅","⛳️","🎣","🏹","🛝","🪁","🤿","🥊","🥋","🎽","⛸","🛷","🛼","🛹"]
-    @State var emojiCount = 4
-    
-    var body: some View {
-        VStack {
-            HStack {
-                ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
-                    CardView(content: emoji)
-                }
-            }
-            HStack {
-				  // 여기의 버튼을 새로운 뷰로 제작
-                Button(action: {
-                    emojiCount += 1
-                }, label: {
-                    VStack {
-                        Text("Remove")
-                        Text("Card")
-                    }
-                })
-                Spacer()
-				  // 여기의 버튼을 새로운 뷰로 제작
-                Button(action: {
-                    emojiCount -= 1
-                }, label: {
-                    VStack {
-                        Text("Add")
-                        Text("Card")
-                    }
-                })
-            }
-            .padding(.horizontal)
-        }
-        .padding(.horizontal)
-        .foregroundColor(.red)
-    }
-}
-```
-
-변경 후 다음과 같다.
-
-```swift
-struct ContentView: View {
-    var emojis = ["⚽️","🏀","🏈","⚾️","🏉","🏐","🎾","🥎","🥏","🎱","🪀","🏓","🥍","🏑","🏒","🏸","🏏","🪃","🥅","⛳️","🎣","🏹","🛝","🪁","🤿","🥊","🥋","🎽","⛸","🛷","🛼","🛹"]
-    @State var emojiCount = 4
-    
-    var body: some View {
-        VStack {
-            HStack {
-                ForEach(emojis[0..<emojiCount], id: \.self) { emoji in
-                    CardView(content: emoji)
-                }
-            }
-            HStack {
-                remove
-                Spacer()
-                add
-            }
-            .padding(.horizontal)
-        }
-        .padding(.horizontal)
-        .foregroundColor(.red)
-    }
-    
-    var remove: some View {
-        Button(action: {
-            emojiCount += 1
-        }, label: {
-            VStack {
-                Text("Remove")
-                Text("Card")
-            }
-        })
-    }
-    
-    var add: some View {
-        Button(action: {
-            emojiCount -= 1
-        }, label: {
-            VStack {
-                Text("Add")
-                Text("Card")
-            }
-        })
-    }
-}
-```
-
-더 길어진 것 같지만,, 보기에는 깔끔하다!
-
-## 아이콘 사이트
-[여기]([SF Symbols - Apple Developer](https://developer.apple.com/sf-symbols/))로 가면 다양한 아이콘을 볼 수 있고, 이미지로써 사용할 수 있다. 많은 사용 바란다.
-
-```swift
-	var remove: some View {
-        Button(action: {
-            emojiCount += 1
-        }, label: {
-            Image(systemName: "minus.circle")
-        })
-    }
-    
-    var add: some View {
-        Button(action: {
-            emojiCount -= 1
-        }, label: {
-            Image(systemName: "plus.circle")
-        })
-    }
-```
-
-## LazyVGrid
-<img width="469" alt="스크린샷 2022-06-18 오후 1 13 48" src="https://user-images.githubusercontent.com/68142821/174422349-6860bb42-ac74-481f-97f7-568b734f3fc4.png">
-
-### 핵심 포인트
-1. 
-- column값에는 숫자를 집어넣어도 된다. `column: 3`과 같이.
-- 그러나 사진과 같이 사용하면, 해당 컬럼에 대한 설정이나 크기, 공간 등을 세부하게 설정할 수 있다.
-- HStack, VStack의 경우 **자신에게 주어진 모든 공간을 할당**하는 특징을 가지고 있어 VStack의 예시로 들면, 높이 100이 주어지면 100을 전체 다 사용한다.
-- 그러나 LazyVGrid의 경우는 안의 내용물의 크기에 영향을 받아 container을 형성하기 때문에 그러한 차이가 있다는 것을 알아두면 좋겠다.
-- 위의 사진에서 `CardView(content: emoji).aspectRatio(2/3, contentMode: .fit)`와 같이 aspectRatio속성을 추가하면, 카드의 크기 비율을 유지하며 적절한 카드 크기를 제공할 수 있다.
-
-2. 속성 값
-- adaptive: (LazyVGrid의 경우) minimum 값 이상의 사이즈로 열마다 가능한 많이 아이템들을 배치하고자 할 때 사용되는 사이즈.
-* flexible: (LazyVGrid의 경우) minimum 값 이상의 사이즈로 column 수를 조절 하고 싶을 때 사용되는 사이즈. adaptive와 유사하나 열마다 배치되는 아이템 수를 조절할 수 있다는 점
-* fixed: (LazyVGrid의 경우) column 수와 크기를 직접 조절하고 싶을 때 사용하는 사이즈.
-[출처]([SwiftUI GridView 그리기 - Jaesung_0o0 - Medium](https://jaesung0o0.medium.com/swiftui-gridview-%EA%B7%B8%EB%A6%AC%EA%B8%B0-2f399c9d754c))
-
-
-## strokeBorder
-- stroke()는 두꺼워질수록 화면을 벗어날 수 있는 소지가 존재하지만, strokeBorder는 화면 해상도로부터 안전하게 지켜주며, 안쪽으로 채워지는 특징을 가지고 있다.
+[image:39D20BA9-F9BC-485D-B540-5BE9AC8D676A-595-000000728732214F/스크린샷 2022-06-18 오후 6.30.22.png]
+- View 에 있었던 emojis 변수를 가져와 다음과 같이 ViewModel에 넣고 그것으로 content를 제작한다고 해보자. 그러나 이 또한 오류가 생긴다.
+- 이 오류는 어려울 수도 있겠지만 initializes에 관련한 것이다.
+[image:09D4BE4D-952A-4DE0-824A-515A38509445-595-000000730E241EF7/스크린샷 2022-06-18 오후 6.31.55.png]
+- 다음 상황에서도 똑같은 오류가 난다.
+- class에서는 a와 b의 선언이 메모리에 올라가 구현된 instance를 사용하는 것이다.
+- 즉, 메모리에 올라가지 않으면 instance로 사용하지 못한다는 것이다.
+- 그러나 이러한 과정에는 **어떠한 순서가 존재하지 않기** 때문에 a와 b는 c보다 더 늦게 생성될 수 있으며, 그렇기에 c에서는 a와 b를 참조할 수 없다.
+- 이것과는 별개로 func안에 있는 요소들은 **자동으로 동기화가 설정되어 순서를 보장받기 때문에 func와 비교하면 안** 된다.
+- 즉, emojis를 사용하기 위해서는 `static`이라는 전역 변수로 설정해주어야만 미리 메모리에 올라가고, 이를 사용할 수 있을 것이다.
