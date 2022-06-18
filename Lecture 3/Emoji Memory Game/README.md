@@ -126,17 +126,21 @@ parameter으로 cards를 넘겨주어야 오류가 해결된다고 함.
 - 그 모든 것들은 ViewModel으로 부터 받아야한다!
 
 3. 
-[image:54AADE32-D75F-47B6-9CA4-540D6D6DBEF2-595-0000006E0B597B8D/스크린샷 2022-06-18 오후 6.16.59.png]
+<img width="692" alt="스크린샷 2022-06-18 오후 6 16 59" src="https://user-images.githubusercontent.com/68142821/174440334-e0a5a820-23f7-40ac-8747-4ce4e2fb529a.png">
+
 - 다음과 같이 하나의 함수를 만들어 ViewModel에서 Model에게 넘겨줄 수 있다.
 - 클로저를 이용해서 다음과 같이 생략할 수 있다.
-[image:443886DD-4F25-4BFB-AEA0-7A2539219D25-595-0000006E9A3CD486/스크린샷 2022-06-18 오후 6.18.40.png]
+	
+<img width="740" alt="스크린샷 2022-06-18 오후 6 18 40" src="https://user-images.githubusercontent.com/68142821/174440352-669ee436-9bd2-45da-9c68-becf777c0705.png">
 
 4. 
-
-[image:39D20BA9-F9BC-485D-B540-5BE9AC8D676A-595-000000728732214F/스크린샷 2022-06-18 오후 6.30.22.png]
+<img width="997" alt="스크린샷 2022-06-18 오후 6 30 22" src="https://user-images.githubusercontent.com/68142821/174440371-16a2e5f3-b721-4fb9-a8ad-f03fecf7567c.png">
+	
 - View 에 있었던 emojis 변수를 가져와 다음과 같이 ViewModel에 넣고 그것으로 content를 제작한다고 해보자. 그러나 이 또한 오류가 생긴다.
 - 이 오류는 어려울 수도 있겠지만 initializes에 관련한 것이다.
-[image:09D4BE4D-952A-4DE0-824A-515A38509445-595-000000730E241EF7/스크린샷 2022-06-18 오후 6.31.55.png]
+	
+<img width="1011" alt="스크린샷 2022-06-18 오후 6 31 55" src="https://user-images.githubusercontent.com/68142821/174440380-46f0285f-ea08-433d-9d6e-ca39991a349c.png">
+	
 - 다음 상황에서도 똑같은 오류가 난다.
 - class에서는 a와 b의 선언이 메모리에 올라가 구현된 instance를 사용하는 것이다.
 - 즉, 메모리에 올라가지 않으면 instance로 사용하지 못한다는 것이다.
