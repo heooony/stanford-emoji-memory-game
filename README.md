@@ -1,10 +1,12 @@
 # 스탠포드 CS193p 강의
 이 영상은 [Stanford 유튜브 채널](https://www.youtube.com/c/stanford)에서 확인할 수 있습니다.
 본 강의는 **Swift UI**를 사용하며, 기본 입문자가 아닌 어느 정도 **siwft의 개념을 확립**한 사람에게 추천드립니다.
+기존 *storyboard*의 형식이 아니기 때문에 자신이 어떤 version을 사용하는지에 대해 확인하고 강의드리기를 추천드립니다. 
+storyboard를 사용하는 다른 강의는 [이곳](https://www.youtube.com/watch?v=TZL5AmwuwlA&list=PL3d_SFOiG7_8ofjyKzX6Nl1wZehbdiZC_)에서 확인하실 수 있습니다.
 
 ### [이 리포지토리에서 확인할 수 있는 사항들은 다음과 같습니다.]
 - swift UI 강의 데모 코드(작성자가 혼자 정리한..)
-- 핵심 포인트(직접 해보면서 중요했던 점을 정리했습니다.
+- 핵심 포인트(직접 해보면서 중요했던 점을 정리했습니다)
 - 그 외 느낀점들
 
 다음은 강의 설명입니다.
