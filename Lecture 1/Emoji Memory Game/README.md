@@ -1,4 +1,3 @@
-# 
 # Lecture 1 : Getting Started with SwiftUI
 ## 타입 추론
 ```swift
