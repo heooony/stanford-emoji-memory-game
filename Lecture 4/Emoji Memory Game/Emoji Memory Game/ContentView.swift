@@ -28,9 +28,9 @@ struct ContentView: View {
 }
 
 struct CardView: View {
-    var card: MemoryGame<String>.Card
+    let card: MemoryGame<String>.Card
     
-    var body: some View {
+    var body : some View {
         ZStack {
             let shape = RoundedRectangle(cornerRadius: 20.0)
             if card.isFaceUp {
